@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Media;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace BlueTimer
@@ -267,45 +273,152 @@ namespace BlueTimer
             }
         }
 
-        private void RestoreTimeValues()
+        private void notifyIcon1_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            mNotifyIcon.Visible = false;
+
+            ShowInTaskbar = true;
+
+            Show();
+
+            WindowState = WindowState.Normal;
         }
-
-
-
-        private void PlaySound()
-        {
-            throw new NotImplementedException();
-        }
-
-
-
 
         private void myWindow_StateChanged(object sender, EventArgs e)
         {
+            if (myWindow.WindowState == WindowState.Minimized)
+            {
+                mNotifyIcon = new System.Windows.Forms.NotifyIcon();
 
+                mNotifyIcon.Text = "Blue Timer";
+
+                mNotifyIcon.Click += notifyIcon1_Click;
+
+                Stream _imageStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Timer.ico")).Stream;
+
+                mNotifyIcon.Icon = new Icon(_imageStream);
+
+                mNotifyIcon.Visible = true;
+
+                this.Hide();
+            }
+        }
+
+        private void RestoreTimeValues()
+        {
+            tb_Hours.Text = mBeforeLaunchHours.ToString("00");
+            tb_Minutes.Text = mBeforeLaunchMinutes.ToString("00");
+            tb_Seconds.Text = mBeforeLaunchSeconds.ToString("00");
+            tb_SubMinutes.Text = mBeforeLaunchSubMinutes.ToString("00");
+            tb_SubSeconds.Text = mBeforeLaunchSubSeconds.ToString("00");
         }
 
         private void TextBoxNumberValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
+            // Regex that matches disallowed text
+            Regex regex = new Regex("[^0-9]+");
 
+            e.Handled = regex.IsMatch(e.Text);
         }
 
         private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true;
+            }
+            base.OnPreviewKeyDown(e);
         }
 
         private void TextBoxLostFocus(object sender, RoutedEventArgs e)
         {
+            if ((sender as TextBox).Text == "")
+            {
+                (sender as TextBox).Text = "00";
+            }
+            else
+            {
+                (sender as TextBox).Text = Convert.ToInt32((sender as TextBox).Text).ToString("00");
 
+                if (Convert.ToInt32((sender as TextBox).Text) > 59)
+                    (sender as TextBox).Text = "59";
+            }
         }
 
+        private void PlaySound()
+        {
+            if (radio1.IsChecked == true)
+                PlayConsoleBeeps();
+            else if (radio2.IsChecked == true)
+                PlayBeeps();
+            else if (radio3.IsChecked == true)
+                PlayExclamations();
+            else if (radio4.IsChecked == true)
+                PlayAsterisks();
+            else if (radio5.IsChecked == true)
+                PlayHands(1);
+        }
 
+        private void PlayConsoleBeeps()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 3; j > 0; j--)
+                {
+                    Console.Beep(4500, 100);
+                }
 
+                Thread.Sleep(125);
 
+                Console.Beep(4600, 200);
 
+                Thread.Sleep(500);
+            }
+        }
+
+        private void PlayBeeps()
+        {
+            for (int j = 4; j > 0; j--)
+            {
+                SystemSounds.Beep.Play();
+
+                Thread.Sleep(400);
+            }
+        }
+
+        private void PlayExclamations()
+        {
+            for (int j = 3; j > 0; j--)
+            {
+                for (int i = 3; i > 0; i--)
+                {
+                    SystemSounds.Exclamation.Play();
+                    Thread.Sleep(300);
+                }
+
+                Thread.Sleep(125);
+                SystemSounds.Exclamation.Play();
+                Thread.Sleep(500);
+            }
+        }
+
+        private void PlayAsterisks()
+        {
+            for (int j = 2; j > 0; j--)
+            {
+                SystemSounds.Asterisk.Play();
+                Thread.Sleep(800);
+            }
+        }
+
+        private void PlayHands(int times)
+        {
+            for (int j = times; j > 0; j--)
+            {
+                SystemSounds.Hand.Play();
+                Thread.Sleep(2500);
+            }
+        }
 
     }
 }
