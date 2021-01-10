@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="other">other...</system:String>
+    <system:String x:Key="single-timer-presets">Single timer presets</system:String>
+    <system:String x:Key="subtimer-presets">Subtimer presets</system:String>
+    <system:String x:Key="sound-notification">sound notification</system:String>
+    <system:String x:Key="timer-sound">Timer sound:</system:String>
+    <system:String x:Key="subtimer-sound">Subtimer sound:</system:String>
+    <system:String x:Key="turn-the-subtimer-on">turn the subtimer on</system:String>
+    <system:String x:Key="seconds">seconds</system:String>
+    <system:String x:Key="minute">minute</system:String>
+    <system:String x:Key="minute-short">minute</system:String>
+    <system:String x:Key="sec">sec</system:String>
+    <system:String x:Key="minutes">minutes</system:String>
+    <system:String x:Key="minutes-short">minutes</system:String>
+    <system:String x:Key="m">m</system:String>
+    <system:String x:Key="custom-preset">Custom timer preset</system:String>
+    <system:String x:Key="language">Language:</system:String>
+    <system:String x:Key="english">English</system:String>
+    <system:String x:Key="german">German</system:String>
+    <system:String x:Key="detect">detect</system:String>
+    <system:String x:Key="on-start">On start:</system:String>
+    <system:String x:Key="detect-language">detect language</system:String>
+    <system:String x:Key="set-language">set language:</system:String>
+    <system:String x:Key="set:">set:</system:String>
+
+    <system:String x:Key="Hours">Hours:</system:String>
+    <system:String x:Key="Minutes">Minutes:</system:String>
+    <system:String x:Key="Seconds">Seconds:</system:String>
+    <system:String x:Key="Set">Set</system:String>
+    <system:String x:Key="Cancel">Cancel</system:String>
+
+    <system:String x:Key="hour">hour</system:String>
+    <system:String x:Key="hours">hours</system:String>
+
+    <system:String x:Key="Register...">Register...</system:String>
+
+</ResourceDictionary>
