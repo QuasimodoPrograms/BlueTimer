@@ -116,7 +116,7 @@ namespace BlueTimer
                         tb_Hours.Text = mHours.ToString("00");
 
                         mMinutes = 59;
-                        tb_Minutes.Text = mMinutes.ToString("00");
+                        numeric_Minutes.Value = mMinutes;
 
                         mSeconds = 60;
                     }
@@ -124,7 +124,7 @@ namespace BlueTimer
                 else
                 {
                     mMinutes -= 1;
-                    tb_Minutes.Text = mMinutes.ToString("00");
+                    numeric_Minutes.Value = mMinutes;
                     mSeconds = 60;
                 }
             }
@@ -144,7 +144,7 @@ namespace BlueTimer
             groupBox_SubtimerPresets.IsEnabled = true;
 
             tb_Hours.IsReadOnly = false;
-            tb_Minutes.IsReadOnly = false;
+            numeric_Minutes.IsReadOnly = false;
             tb_Seconds.IsReadOnly = false;
             tb_SubMinutes.IsReadOnly = false;
             tb_SubSeconds.IsReadOnly = false;
@@ -156,7 +156,7 @@ namespace BlueTimer
             groupBox_SubtimerPresets.IsEnabled = false;
 
             tb_Hours.IsReadOnly = true;
-            tb_Minutes.IsReadOnly = true;
+            numeric_Minutes.IsReadOnly = true;
             tb_Seconds.IsReadOnly = true;
             tb_SubMinutes.IsReadOnly = true;
             tb_SubSeconds.IsReadOnly = true;
@@ -167,7 +167,7 @@ namespace BlueTimer
             DisableButtons();
 
             mHours = Convert.ToInt32(tb_Hours.Text);
-            mMinutes = Convert.ToInt32(tb_Minutes.Text);
+            mMinutes = Convert.ToInt32(numeric_Minutes.Value);
             mSeconds = Convert.ToInt32(tb_Seconds.Text);
 
             if (mShouldStoreTimeBeforeLaunch == true)
@@ -273,7 +273,7 @@ namespace BlueTimer
             {
                 string[] time = tag.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                tb_Minutes.Text = string.Format("{0:D2}", int.Parse(time[0]));
+                numeric_Minutes.Value = int.Parse(time[0]);
 
                 tb_Seconds.Text = string.Format("{0:D2}", int.Parse(time[1]));
                 tb_SubMinutes.Text = "00";
@@ -283,14 +283,14 @@ namespace BlueTimer
             {
                 string[] time = tag.Split("+".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                tb_Minutes.Text = string.Format("{0:D2}", int.Parse(time[0]));
+                numeric_Minutes.Value = int.Parse(time[0]);
                 tb_Seconds.Text = "00";
                 tb_SubMinutes.Text = string.Format("{0:D2}", int.Parse(time[1]));
                 tb_SubSeconds.Text = "00";
             }
             else
             {
-                tb_Minutes.Text = "00";
+                numeric_Minutes.Value = 0;
                 tb_Seconds.Text = string.Format("{0:D2}", int.Parse(tag));
                 tb_SubMinutes.Text = "00";
                 tb_SubSeconds.Text = "00";
@@ -331,13 +331,13 @@ namespace BlueTimer
         private void RestoreTimeValues()
         {
             tb_Hours.Text = mBeforeLaunchHours.ToString("00");
-            tb_Minutes.Text = mBeforeLaunchMinutes.ToString("00");
+            numeric_Minutes.Value = mBeforeLaunchMinutes;
             tb_Seconds.Text = mBeforeLaunchSeconds.ToString("00");
             tb_SubMinutes.Text = mBeforeLaunchSubMinutes.ToString("00");
             tb_SubSeconds.Text = mBeforeLaunchSubSeconds.ToString("00");
         }
 
-        private void TextBoxNumberValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void InputNumberValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             // Regex that matches disallowed text
             Regex regex = new Regex("[^0-9]+");

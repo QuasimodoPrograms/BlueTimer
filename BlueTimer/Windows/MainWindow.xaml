@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BlueTimer"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="BlueTimer" Height="500" Width="500"
         StateChanged="myWindow_StateChanged"
@@ -27,11 +27,22 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
+        <Style TargetType="{x:Type toolkit:IntegerUpDown}">
+            <Setter Property="FontSize" Value="45"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="59"/>
+            <Setter Property="DefaultValue" Value="0"/>
+            <Setter Property="DisplayDefaultValueOnEmptyText" Value="True"/>
+            <Setter Property="FormatString" Value="00"/>
+            <EventSetter Event="PreviewTextInput" Handler="InputNumberValidation"/>
+            <EventSetter Event="PreviewKeyDown" Handler="OnPreviewKeyDown"/>
+        </Style>
+
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="MaxLength" Value="2"/>
             <Setter Property="FontSize" Value="45"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <EventSetter Event="PreviewTextInput" Handler="TextBoxNumberValidation"/>
+            <EventSetter Event="PreviewTextInput" Handler="InputNumberValidation"/>
             <EventSetter Event="PreviewKeyDown" Handler="OnPreviewKeyDown"/>
             <EventSetter Event="LostFocus" Handler="TextBoxLostFocus"/>
         </Style>
@@ -167,7 +178,9 @@
 
                 <TextBox Grid.Column="0" Name="tb_Hours" Text="00"/>
                 <TextBlock Grid.Column="1" Text=":"/>
-                <TextBox Grid.Column="2" Name="tb_Minutes" Text="00"/>
+
+                <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="0" Name="numeric_Minutes" />
+
                 <TextBlock Grid.Column="3" Text=":"/>
                 <TextBox Grid.Column="4" Name="tb_Seconds" Text="00"/>
             </Grid>
