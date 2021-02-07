@@ -156,9 +156,7 @@
 
         </Grid>
 
-
-
-        <Grid Grid.Column="2" Margin="5">
+        <Grid Grid.Column="1" Margin="5">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -239,5 +237,7 @@
             </StackPanel>
 
         </Grid>
+
+        <Button Grid.Column="1" Name="btn_About" ToolTip="About developers" Click="btn_About_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="About"/>
     </Grid>
 </Window>

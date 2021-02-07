@@ -36,6 +36,8 @@ namespace BlueTimer
 
         private System.Windows.Forms.NotifyIcon mNotifyIcon;
 
+        private double darkOpacity = 0.5;
+
         #endregion
 
         public MainWindow()
@@ -398,7 +400,20 @@ namespace BlueTimer
             SetLanguageDictionary("de-DE");
         }
 
+        private void btn_About_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = darkOpacity;
 
+            Window_About win = new Window_About()
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+            win.ShowDialog();
+
+            Opacity = 1;
+            ShowInTaskbar = true;
+        }
 
         private void PlayConsoleBeeps()
         {
