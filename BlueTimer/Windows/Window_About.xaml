@@ -5,8 +5,90 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlueTimer"
         mc:Ignorable="d"
-        Title="Window_About" Height="300" Width="300" WindowStartupLocation="CenterOwner">
+        Title="Window_About" Width="300" WindowStartupLocation="CenterOwner"
+        WindowStyle="None" ResizeMode="NoResize" FontFamily="Calibri"
+        BorderBrush="#aaaaaa" BorderThickness="1" FontSize="16"
+        Loaded="Window_Loaded" UseLayoutRounding="True" SizeToContent="Height">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
+        <Border Grid.Row="0" Padding="10" MouseDown="DragWithHeader"
+                Background="Transparent">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Name="tblc_Header" Text="About BlueTimer"
+                           FontWeight="Bold" FontSize="18"/>
+
+                <Button Grid.Column="1" Name="btn_Cross" Content="X"
+                        HorizontalAlignment="Right" Foreground="#aaaaaa"
+                        Click="btn_Close_Click" FontWeight="Bold" FontSize="18"
+                        Style="{StaticResource TransparentButton}"/>
+                
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" BorderThickness="0 1" BorderBrush="#aaaaaa">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Image Grid.Row="0" Name="image"
+                           Source="pack://application:,,,/img/Logo-512-x-128.png"
+                           Cursor="Hand"
+                           MouseDown="image_MouseDown"
+                           ToolTip="Visit us"/>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Grid.Column="0" Name="image_Sub"
+                           Source="pack://application:,,,/img/icon.ico"
+                           ToolTip="tooltip set in code"
+                               RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <TextBlock Grid.Column="1" Name="tblc_Subheader"
+                                   Text="version set in text"
+                                   Margin="10"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+
+                <TextBlock Grid.Row="1" Name="tblc_desc" Text="© Company's Name 2021"
+                           Margin="10" TextWrapping="Wrap"/>
+            </Grid>
+            
+        </Border>
+
+        <Grid Grid.Row="2" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Name="btn_Visit" Content="Visit us" Margin="5"
+                    Click="btn_Visit_Click" Style="{StaticResource BlueButton}"/>
+
+            <Button Grid.Column="1" Name="btn_Close" Content="Close" Margin="5"
+                    Click="btn_Close_Click"/>
+        </Grid>
     </Grid>
 </Window>

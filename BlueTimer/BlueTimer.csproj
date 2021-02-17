@@ -76,6 +76,14 @@
     <Compile Include="Windows\Window_About.xaml.cs">
       <DependentUpon>Window_About.xaml</DependentUpon>
     </Compile>
+    <Page Include="Styles\Buttons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\Logo-512-x-128.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
