@@ -1,0 +1,36 @@
+﻿<Window x:Class="BlueTimer.Window_Buy"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlueTimer"
+        mc:Ignorable="d"
+        Title="Window_Buy"
+        Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Name="btn_Cross" Content="X" HorizontalAlignment="Right"
+                Foreground="#aaaaaa" Style="{StaticResource TransparentButton}"
+                Click="btn_Close_Click" FontWeight="Bold" FontSize="18"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Name="tb_Password" ToolTip="License key"/>
+
+            <Button Grid.Column="1" Name="btn_Register" Click="btn_Register_Click"
+                    Content="Register" Margin="0"/>
+        </Grid>
+
+        <Button Grid.Row="2" Name="btn_Buy" Click="btn_Buy_Click" Background="Khaki"
+                Content="Buy" Margin="0 5 0 0"/>
+    </Grid>
+</Window>

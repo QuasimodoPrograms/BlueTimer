@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using QP = QP_Helpers.QP_Helpers;
 
 namespace BlueTimer
 {
@@ -76,6 +77,40 @@ namespace BlueTimer
             }
 
             App.Current.Resources.MergedDictionaries.Add(dict);
+        }
+
+        private void myWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            string fullRegistryPath = @"HKEY_CURRENT_USER\Software\Quasimodo Programs\BT";
+            string registryValueName = "Key";
+
+            string key = QP.GetRegister(fullRegistryPath, registryValueName);
+
+            if(key != null && QP.IsLicensed(key, "BlueTimer.LicenseKeys.txt"))
+            {
+                QP._isLicensed = true;
+                UnlockFull();
+            }
+            else
+            {
+                QP._isLicensed = false;
+
+                this.Opacity = darkOpacity;
+                Window_Buy win = new Window_Buy()
+                {
+                    Owner = this,
+                    ShowInTaskbar = false
+                };
+                win.ShowDialog();
+
+                this.Opacity = 1;
+                ShowInTaskbar = true;
+            }
+        }
+
+        public void UnlockFull()
+        {
+            grid_Presets.IsEnabled = checkBox_subTimer.IsEnabled = checkBox_sound.IsEnabled = true;
         }
 
         private void mMainTimer_Tick(object sender, EventArgs e)
@@ -414,6 +449,8 @@ namespace BlueTimer
             Opacity = 1;
             ShowInTaskbar = true;
         }
+
+        
 
         private void PlayConsoleBeeps()
         {

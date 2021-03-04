@@ -73,8 +73,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="QP_Helpers.cs" />
     <Compile Include="Windows\Window_About.xaml.cs">
       <DependentUpon>Window_About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Window_Buy.xaml.cs">
+      <DependentUpon>Window_Buy.xaml</DependentUpon>
     </Compile>
     <Page Include="Styles\Buttons.xaml">
       <SubType>Designer</SubType>
@@ -105,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Window_About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Window_Buy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -145,6 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\Logo-512-x-128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LicenseKeys.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

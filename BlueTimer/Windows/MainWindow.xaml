@@ -8,7 +8,9 @@
         Title="BlueTimer" Height="500" Width="500"
         StateChanged="myWindow_StateChanged"
         ResizeMode="CanMinimize"
-        Name="myWindow">
+        Name="myWindow"
+        WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True" Loaded="myWindow_Loaded">
 
     <Window.Style>
         <Style TargetType="Window">
@@ -208,13 +210,13 @@
 
                 <!-- Column 2 -->
                 <Button Grid.Column="1" Name="btn_Stop" ToolTip="Stop" Click="btn_Stop_Click" Visibility="Hidden">
-                    <Image Height="10" Source="stop.jpg"/>
+                    <Image Height="10" Source="pack://application:,,,/stop.jpg"/>
                 </Button>
             </Grid>
 
             <StackPanel Grid.Row="3" Margin="0 10">
                 <!-- Row 1 -->
-                <CheckBox Name="checkBox_sound" Content="Sound (selected below)" Margin="0 0 0 0" IsChecked="True"/>
+                <CheckBox Name="checkBox_sound" Content="Sound (selected below)" Margin="0 0 0 0" IsChecked="True" IsEnabled="False"/>
 
                 <!-- Row 2 -->
                 <Grid>
@@ -233,7 +235,7 @@
                     <RadioButton Grid.Row="4" x:Name="radio5" Content="5"/>
                 </Grid>
 
-                <CheckBox Name="checkBox_subTimer" Content="Turn the subtimer on" Margin="0 10 0 0"/>
+                <CheckBox Name="checkBox_subTimer" Content="Turn the subtimer on" Margin="0 10 0 0" IsEnabled="False"/>
             </StackPanel>
 
         </Grid>
