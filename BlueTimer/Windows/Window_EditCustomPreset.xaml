@@ -1,0 +1,80 @@
+﻿<Window x:Class="BlueTimer.Window_EditCustomPreset"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Edit custom preset" Width="225" Height="200" WindowStartupLocation="CenterOwner"
+        WindowStyle="None" ResizeMode="NoResize" FontFamily="Calibri" BorderBrush="#aaaaaa" BorderThickness="1" FontSize="16" Loaded="Window_Loaded">
+
+    <Window.Resources>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Padding="10" MouseDown="DragWithHeader" Background="Transparent">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Name="tblc_Header" Text="{DynamicResource custom-preset}" FontWeight="Bold" FontSize="18"/>
+
+                <Button Grid.Column="1" Name="btn_Close" Content="X" HorizontalAlignment="Right" Foreground="#aaaaaa" Style="{StaticResource TransparentButton}" Click="btn_Close_Click" FontWeight="Bold" FontSize="18"/>
+            </Grid>
+
+        </Border>
+
+        <Border Grid.Row="1" BorderThickness="0 1" BorderBrush="#aaaaaa">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="75"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource Hours}" Margin="0 0 0 5"/>
+
+                <toolkit:IntegerUpDown Grid.Column="1" Grid.Row="0" x:Name="numeric_Hours" Minimum="0" Maximum="59" Margin="0 0 0 5" DefaultValue="0" DisplayDefaultValueOnEmptyText="True" FormatString="00"/>
+
+
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="{DynamicResource Minutes}" Margin="0 0 0 5"/>
+
+                <toolkit:IntegerUpDown Grid.Column="1" Grid.Row="1" x:Name="numeric_Minutes" Minimum="0" Maximum="59" Margin="0 0 0 5" DefaultValue="0" DisplayDefaultValueOnEmptyText="True" FormatString="00"/>
+
+
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="{DynamicResource Seconds}" Margin="0 0 0 5"/>
+
+                <toolkit:IntegerUpDown Grid.Column="1" Grid.Row="2" x:Name="numeric_Seconds" Minimum="0" Maximum="59" Margin="0 0 0 5" DefaultValue="0" DisplayDefaultValueOnEmptyText="True" FormatString="00"/>
+            </Grid>
+        </Border>
+
+
+        <Grid Grid.Row="2" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Name="btn_Set" Content="{DynamicResource Set}" Margin="5" Click="btn_Set_Click" Style="{StaticResource BlueButton}"/>
+
+            <Button Grid.Column="1" Name="btn_Cancel" Content="{DynamicResource Cancel}" Margin="5" Click="btn_Cancel_Click"/>
+        </Grid>
+    </Grid>
+</Window>

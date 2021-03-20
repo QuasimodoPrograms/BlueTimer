@@ -80,6 +80,9 @@
     <Compile Include="Windows\Window_Buy.xaml.cs">
       <DependentUpon>Window_Buy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Window_EditCustomPreset.xaml.cs">
+      <DependentUpon>Window_EditCustomPreset.xaml</DependentUpon>
+    </Compile>
     <Page Include="Styles\Buttons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,6 +119,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Window_EditCustomPreset.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -143,10 +150,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="stop.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Timer.ico" />
+    <Resource Include="img\stop.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\icon.ico" />
@@ -156,6 +160,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LicenseKeys.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\english.png" />
+    <Resource Include="img\german.png" />
+    <Resource Include="img\info_48x48.png" />
+    <Resource Include="img\notify-icon_16.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

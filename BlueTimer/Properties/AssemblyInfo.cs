@@ -8,12 +8,12 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BlueTimer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("BlueTimer by Quasimodo Programs")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Quasimodo Programs")]
 [assembly: AssemblyProduct("BlueTimer")]
-[assembly: AssemblyCopyright("Copyright © 2021")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © 2021 Quasimodo Programs")]
+[assembly: AssemblyTrademark("Quasimodo Programs")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

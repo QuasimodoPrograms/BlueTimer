@@ -22,5 +22,101 @@ namespace BlueTimer.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool detectLanguageOnStart {
+            get {
+                return ((bool)(this["detectLanguageOnStart"]));
+            }
+            set {
+                this["detectLanguageOnStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int defaultLanguageIndex {
+            get {
+                return ((int)(this["defaultLanguageIndex"]));
+            }
+            set {
+                this["defaultLanguageIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customHours {
+            get {
+                return ((int)(this["customHours"]));
+            }
+            set {
+                this["customHours"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customMinutes {
+            get {
+                return ((int)(this["customMinutes"]));
+            }
+            set {
+                this["customMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customSeconds {
+            get {
+                return ((int)(this["customSeconds"]));
+            }
+            set {
+                this["customSeconds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customSubHours {
+            get {
+                return ((int)(this["customSubHours"]));
+            }
+            set {
+                this["customSubHours"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customSubMinutes {
+            get {
+                return ((int)(this["customSubMinutes"]));
+            }
+            set {
+                this["customSubMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int customSubSeconds {
+            get {
+                return ((int)(this["customSubSeconds"]));
+            }
+            set {
+                this["customSubSeconds"] = value;
+            }
+        }
     }
 }

@@ -10,7 +10,8 @@
         ResizeMode="CanMinimize"
         Name="myWindow"
         WindowStartupLocation="CenterScreen"
-        UseLayoutRounding="True" Loaded="myWindow_Loaded">
+        UseLayoutRounding="True" Loaded="myWindow_Loaded"
+        Closing="myWindow_Closing">
 
     <Window.Style>
         <Style TargetType="Window">
@@ -26,7 +27,7 @@
         <Style TargetType="{x:Type GroupBox}">
             <Setter Property="Margin" Value="1"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
 
         <Style TargetType="{x:Type toolkit:IntegerUpDown}">
@@ -40,23 +41,11 @@
             <EventSetter Event="PreviewKeyDown" Handler="OnPreviewKeyDown"/>
         </Style>
 
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="MaxLength" Value="2"/>
-            <Setter Property="FontSize" Value="45"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <EventSetter Event="PreviewTextInput" Handler="InputNumberValidation"/>
-            <EventSetter Event="PreviewKeyDown" Handler="OnPreviewKeyDown"/>
-            <EventSetter Event="LostFocus" Handler="TextBoxLostFocus"/>
-        </Style>
-
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Margin" Value="0 2 0 0"/>
-        </Style>
     </Window.Resources>
 
-    <Grid Background="LightGoldenrodYellow">
+    <Grid Background="#eaf2ff">
         <Grid.Resources>
-            <Style TargetType="{x:Type TextBlock}">
+            <Style TargetType="{x:Type TextBlock}" x:Key="time-separators">
                 <Setter Property="FontSize" Value="45"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -80,50 +69,427 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Grid.Column="0" Name="groupBox_SingleTimerPresets" Header="Single timer presets">
+                <GroupBox Grid.Column="0" Name="groupBox_SingleTimerPresets">
+                    <GroupBox.Header>
+                        <TextBlock Text="{DynamicResource single-timer-presets}" Margin="0 0 0 1"/>
+                    </GroupBox.Header>
+
                     <StackPanel>
-                        <Button Content="0" Click="btn_Preset_Click" Tag="00"/>
-                        <Button Content="5 seconds" Click="btn_Preset_Click" Tag="05"/>
-                        <Button Content="10 seconds" Click="btn_Preset_Click" Tag="10"/>
-                        <Button Content="15 seconds" Click="btn_Preset_Click" Tag="15"/>
-                        <Button Content="30 seconds" Click="btn_Preset_Click" Tag="30"/>
-                        <Button Content="45 seconds" Click="btn_Preset_Click" Tag="45"/>
-                        <Button Content="1 minute" Click="btn_Preset_Click" Tag="01.00"/>
-                        <Button Content="1 minute 20 sec" Click="btn_Preset_Click" Tag="01.20"/>
-                        <Button Content="1 minute 30 sec" Click="btn_Preset_Click" Tag="01.30"/>
-                        <Button Content="1 minute 45 sec" Click="btn_Preset_Click" Tag="01.45"/>
-                        <Button Content="2 minutes" Click="btn_Preset_Click" Tag="02.00"/>
-                        <Button Content="2 minutes 30 sec" Click="btn_Preset_Click" Tag="02.30"/>
-                        <Button Content="3 minutes" Click="btn_Preset_Click" Tag="03.00"/>
-                        <Button Content="5 minutes" Click="btn_Preset_Click" Tag="05.00"/>
-                        <Button Content="10 minutes" Click="btn_Preset_Click" Tag="10.00"/>
-                        <Button Content="15 minutes" Click="btn_Preset_Click" Tag="15.00"/>
-                        <Button Content="30 minutes" Click="btn_Preset_Click" Tag="30.00"/>
-                        <Button Content="45 minutes" Click="btn_Preset_Click" Tag="45.00"/>
+                        <Button Content="0" Click="btn_Preset_Click" Tag="all"/>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="0"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="5"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="10"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="15"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="30"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="seconds" Background="#FFB7D8FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="45"/>
+                                    <Run Text="{DynamicResource seconds}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="0"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="5"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="10"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="15"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="30"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="minutes" Background="#FFF7C1FF">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="45"/>
+                                    <Run Text="{DynamicResource minutes-short}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="0"/>
+                                    <Run Text="{DynamicResource hours}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="1"/>
+                                    <Run Text="{DynamicResource hour}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="2"/>
+                                    <Run Text="{DynamicResource hours}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="3"/>
+                                    <Run Text="{DynamicResource hours}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="4"/>
+                                    <Run Text="{DynamicResource hours}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="hours" Background="#FFFF9D9D">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="5"/>
+                                    <Run Text="{DynamicResource hours}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Custom_Click">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="{DynamicResource other}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Grid.Column="1" Name="groupBox_SubtimerPresets" Header="Subtimer presets">
+                <GroupBox Grid.Column="1" Name="groupBox_SubtimerPresets">
+                    <GroupBox.Header>
+                        <TextBlock Text="{DynamicResource subtimer-presets}" Margin="0 0 0 1"/>
+                    </GroupBox.Header>
 
                     <StackPanel>
-                        <Button Content="1m + 1m" Click="btn_Preset_Click" Tag="1+1"/>
-                        <Button Content="2m + 2m" Click="btn_Preset_Click" Tag="2+2"/>
-                        <Button Content="3m + 3m" Click="btn_Preset_Click" Tag="3+3"/>
-                        <Button Content="4m + 4m" Click="btn_Preset_Click" Tag="4+4"/>
-                        <Button Content="5m + 5m" Click="btn_Preset_Click" Tag="5+5"/>
-                        <Button Content="6m + 6m" Click="btn_Preset_Click" Tag="6+6"/>
-                        <Button Content="7m + 7m" Click="btn_Preset_Click" Tag="7+7"/>
-                        <Button Content="8m + 8m" Click="btn_Preset_Click" Tag="8+8"/>
-                        <Button Content="10m + 10m" Click="btn_Preset_Click" Tag="10+10"/>
-                        <Button Content="15m + 15m" Click="btn_Preset_Click" Tag="15+15"/>
-                        <Button Content="20m + 20m" Click="btn_Preset_Click" Tag="20+20"/>
-                        <Button Content="25m + 25m" Click="btn_Preset_Click" Tag="25+25"/>
-                        <Button Content="30m + 30m" Click="btn_Preset_Click" Tag="30+30"/>
-                        <Button Content="35m + 35m" Click="btn_Preset_Click" Tag="35+35"/>
-                        <Button Content="40m + 40m" Click="btn_Preset_Click" Tag="40+40"/>
-                        <Button Content="45m + 45m" Click="btn_Preset_Click" Tag="45+45"/>
-                        <Button Content="50m + 50m" Click="btn_Preset_Click" Tag="50+50"/>
-                        <Button Content="55m + 55m" Click="btn_Preset_Click" Tag="55+55"/>
+                        <Button Click="btn_Preset_Click" Tag="1+1">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="1"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="1"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="2+2">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="2"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="2"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="3+3">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="3"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="3"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="4+4">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="4"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="4"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="5+5">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="5"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="5"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="6+6">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="6"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="6"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="7+7">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="7"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="7"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="8+8">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="8"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="8"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="9+9">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="9"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="9"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="10+10">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="10"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="10"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="15+15">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="15"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="15"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="20+20">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="20"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="20"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="25+25">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="25"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="25"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="30+30">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="30"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="30"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="35+35">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="35"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="35"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="40+40">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="40"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="40"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="45+45">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="45"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="45"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="50+50">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="50"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="50"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_Preset_Click" Tag="55+55">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="55"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                    <Run Text="+"/>
+                                    <Run Text="55"/>
+                                    <Run Text="{DynamicResource m}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Click="btn_CustomSubtimer_Click">
+                            <Button.Content>
+                                <TextBlock>
+                                    <Run Text="{DynamicResource other}"/>
+                                </TextBlock>
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
 
                 </GroupBox>
@@ -141,17 +507,30 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="1" Content="?" Click="ButtonDetectLanguage_Click" ToolTip="{DynamicResource detect}" >
+                    <TextBlock Grid.Column="0" Text="{DynamicResource language}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 2 0"/>
+
+                    <Button Grid.Column="1" Content="?" Click="ButtonDetectLanguage_Click" ToolTip="{DynamicResource detect}" Style="{StaticResource TransparentButton}">
 
                     </Button>
 
-                    <Button Grid.Column="2" Click="ButtonEnglish_Click" ToolTip="{DynamicResource english}" Content="English">
-
+                    <Button Grid.Column="2" Style="{StaticResource TransparentButton}" Click="ButtonEnglish_Click" ToolTip="{DynamicResource english}">
+                        <Image Source="pack://application:,,,/img/english.png" Margin="5 0"/>
                     </Button>
 
-                    <Button Grid.Column="3" Click="ButtonGerman_Click" ToolTip="{DynamicResource german}" Content="German">
-
+                    <Button Grid.Column="3" Click="ButtonGerman_Click" Style="{StaticResource TransparentButton}" ToolTip="{DynamicResource german}">
+                        <Image Source="pack://application:,,,/img/german.png" Margin="5 0"/>
                     </Button>
+                </Grid>
+
+                <TextBlock Text="{DynamicResource on-start}" Margin="0 5 0 0"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Column="0" x:Name="radio_detectLanguage" Content="{DynamicResource detect-language}" IsChecked="True" GroupName="lang" VerticalAlignment="Center"/>
                 </Grid>
 
             </StackPanel>
@@ -176,27 +555,31 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Name="tb_Hours" Text="00"/>
+                <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="0" x:Name="numeric_Hours" IsEnabled="False"/>
                 <TextBlock Grid.Column="1" Text=":"/>
 
                 <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="0" Name="numeric_Minutes" />
 
                 <TextBlock Grid.Column="3" Text=":"/>
-                <TextBox Grid.Column="4" Name="tb_Seconds" Text="00"/>
+                <toolkit:IntegerUpDown Grid.Column="4" Grid.Row="0" Name="numeric_Seconds"/>
             </Grid>
 
             <Grid Grid.Row="1" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}" Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Subtimer" FontSize="17"/>
-                <TextBox Grid.Column="1" Name="tb_SubMinutes" Text="00"/>
-                <TextBlock Grid.Column="2" Text=":"/>
-                <TextBox Grid.Column="3" Name="tb_SubSeconds" Text="00"/>
+                <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="1" x:Name="numeric_SubHours" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}" />
+
+                <TextBlock Grid.Column="1" Text=":"/>
+
+                <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="1" x:Name="numeric_SubMinutes" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}"/>
+                <TextBlock Grid.Column="3" Text=":"/>
+                <toolkit:IntegerUpDown Grid.Column="4" Grid.Row="1" x:Name="numeric_SubSeconds" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}"/>
             </Grid>
 
             <Grid Grid.Row="2" Margin="0 10">
@@ -210,7 +593,7 @@
 
                 <!-- Column 2 -->
                 <Button Grid.Column="1" Name="btn_Stop" ToolTip="Stop" Click="btn_Stop_Click" Visibility="Hidden">
-                    <Image Height="10" Source="pack://application:,,,/stop.jpg"/>
+                    <Image Height="10" Source="pack://application:,,,/img/stop.jpg"/>
                 </Button>
             </Grid>
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
 using QP = QP_Helpers.QP_Helpers;
 
 namespace BlueTimer
@@ -20,9 +16,15 @@ namespace BlueTimer
             Focus();
         }
 
+        private void DragWithHeader(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
         private void btn_Register_Click(object sender, RoutedEventArgs e)
         {
-            if(QP.IsLicensed(tb_Password.Text, "BlueTimer.LicenseKeys.txt"))
+            if (QP.IsLicensed(tb_Password.Text, "BlueTimer.LicenseKeys.txt"))
             {
                 string fullRegistryPath = @"HKEY_CURRENT_USER\Software\Quasimodo Programs\BT";
                 string registryValueName = "Key";
@@ -43,7 +45,7 @@ namespace BlueTimer
 
         private void btn_Buy_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://wwww.youtube.com/c/TheLumind");
+            Process.Start("https://www.youtube.com/channel/UCtKDQALT9QMSg2Vet3zLRpQ?sub_confirmation=1");
         }
 
         private void btn_Close_Click(object sender, RoutedEventArgs e)
@@ -51,8 +53,6 @@ namespace BlueTimer
             Close();
         }
 
-        
 
-        
     }
 }

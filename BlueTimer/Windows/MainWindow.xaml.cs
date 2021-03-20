@@ -18,6 +18,8 @@ namespace BlueTimer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public enum TimerType { Main, Sub }
+
         #region Private members
 
         private int mMinutes = 0, mSeconds = 0, mHours = 0;
@@ -86,7 +88,7 @@ namespace BlueTimer
 
             string key = QP.GetRegister(fullRegistryPath, registryValueName);
 
-            if(key != null && QP.IsLicensed(key, "BlueTimer.LicenseKeys.txt"))
+            if (key != null && QP.IsLicensed(key, "BlueTimer.LicenseKeys.txt"))
             {
                 QP._isLicensed = true;
                 UnlockFull();
@@ -450,7 +452,15 @@ namespace BlueTimer
             ShowInTaskbar = true;
         }
 
-        
+        private void myWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+
+        private void btn_Custom_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 
         private void PlayConsoleBeeps()
         {

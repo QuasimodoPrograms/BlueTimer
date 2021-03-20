@@ -17,7 +17,7 @@ namespace BlueTimer
 
         MainWindow owner;
 
-        private string mWebsite = "https://www.youtube.com/c/MishaDubok";
+        private string mWebsite = "https://www.youtube.com/channel/UCtKDQALT9QMSg2Vet3zLRpQ?sub_confirmation=1";
 
         #endregion
 
@@ -65,6 +65,6 @@ namespace BlueTimer
             Process.Start(mWebsite);
         }
 
-        
+
     }
 }
