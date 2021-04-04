@@ -531,6 +531,26 @@
                     </Grid.ColumnDefinitions>
 
                     <RadioButton Grid.Column="0" x:Name="radio_detectLanguage" Content="{DynamicResource detect-language}" IsChecked="True" GroupName="lang" VerticalAlignment="Center"/>
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <RadioButton Grid.Column="0" x:Name="radio_defaultLanguage" Content="{DynamicResource set:}" VerticalAlignment="Center" GroupName="lang" Margin="5 0"/>
+
+                        <ComboBox Grid.Column="1" Name="combo_language" Margin="1">
+                            <ComboBoxItem>
+                                <Image Source="pack://application:,,,/img/english.png"/>
+                            </ComboBoxItem>
+
+                            <ComboBoxItem>
+                                <Image Source="pack://application:,,,/img/german.png"/>
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
                 </Grid>
 
             </StackPanel>
@@ -547,6 +567,12 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -556,31 +582,24 @@
                 </Grid.ColumnDefinitions>
 
                 <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="0" x:Name="numeric_Hours" IsEnabled="False"/>
-                <TextBlock Grid.Column="1" Text=":"/>
+                <TextBlock Grid.Column="1" Text=":" Style="{StaticResource time-separators}"/>
 
                 <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="0" Name="numeric_Minutes" />
 
-                <TextBlock Grid.Column="3" Text=":"/>
+                <TextBlock Grid.Column="3" Text=":" Style="{StaticResource time-separators}"/>
                 <toolkit:IntegerUpDown Grid.Column="4" Grid.Row="0" Name="numeric_Seconds"/>
-            </Grid>
 
-            <Grid Grid.Row="1" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}" Margin="0 5 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
 
                 <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="1" x:Name="numeric_SubHours" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}" />
 
-                <TextBlock Grid.Column="1" Text=":"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text=":" Style="{StaticResource time-separators}"/>
 
                 <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="1" x:Name="numeric_SubMinutes" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}"/>
-                <TextBlock Grid.Column="3" Text=":"/>
+                <TextBlock Grid.Column="3" Grid.Row="1" Text=":" Style="{StaticResource time-separators}"/>
                 <toolkit:IntegerUpDown Grid.Column="4" Grid.Row="1" x:Name="numeric_SubSeconds" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}"/>
             </Grid>
+
+            <CheckBox Grid.Row="1" Name="checkBox_subTimer" Content="{DynamicResource turn-the-subtimer-on}" Margin="0 10 0 0" IsEnabled="False"/>
 
             <Grid Grid.Row="2" Margin="0 10">
                 <Grid.ColumnDefinitions>
@@ -589,21 +608,33 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Column 1 -->
-                <Button Grid.Column="0" Name="btn_StartPause" Click="btn_StartPause_Click" Content="Start"/>
+                <Button Grid.Column="0" Name="btn_StartPause" Click="btn_StartPause_Click" Content="Start" Style="{StaticResource BlueButton}"/>
 
                 <!-- Column 2 -->
-                <Button Grid.Column="1" Name="btn_Stop" ToolTip="Stop" Click="btn_Stop_Click" Visibility="Hidden">
-                    <Image Height="10" Source="pack://application:,,,/img/stop.jpg"/>
+                <Button Grid.Column="1" Name="btn_Stop" ToolTip="Stop" Click="btn_Stop_Click" Visibility="Hidden" Style="{StaticResource ImageButton}">
+                    <Image MaxHeight="10" Source="pack://application:,,,/img/stop.jpg"/>
                 </Button>
             </Grid>
 
-            <StackPanel Grid.Row="3" Margin="0 10">
+            <Grid Grid.Row="3" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
                 <!-- Row 1 -->
-                <CheckBox Name="checkBox_sound" Content="Sound (selected below)" Margin="0 0 0 0" IsChecked="True" IsEnabled="False"/>
+                <CheckBox Grid.Row="0" Name="checkBox_sound" Content="{DynamicResource sound-notification}" Margin="0 0 0 5" IsChecked="True" IsEnabled="False"/>
 
                 <!-- Row 2 -->
-                <Grid>
+                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=checkBox_sound,Path=IsEnabled}">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
                     <Grid.RowDefinitions>
+                        <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -611,18 +642,42 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <RadioButton Grid.Row="0" x:Name="radio1" IsChecked="True" Content="1"/>
-                    <RadioButton Grid.Row="1" x:Name="radio2" Content="2"/>
-                    <RadioButton Grid.Row="2" x:Name="radio3" Content="3"/>
-                    <RadioButton Grid.Row="3" x:Name="radio4" Content="4"/>
-                    <RadioButton Grid.Row="4" x:Name="radio5" Content="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource timer-sound}"/>
+
+                    <RadioButton Grid.Row="1" x:Name="radio1" IsChecked="True" Content="1" GroupName="timer sounds"/>
+                    <RadioButton Grid.Row="2" x:Name="radio2" Content="2" GroupName="timer sounds"/>
+                    <RadioButton Grid.Row="3" x:Name="radio3" Content="3" GroupName="timer sounds"/>
+                    <RadioButton Grid.Row="4" x:Name="radio4" Content="4" GroupName="timer sounds"/>
+                    <RadioButton Grid.Row="5" x:Name="radio5" Content="5" GroupName="timer sounds"/>
+
+                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{DynamicResource subtimer-sound}"/>
+
+                    <RadioButton Grid.Row="1" Grid.Column="1" x:Name="radio1sub" IsChecked="True" Content="1" />
+                    <RadioButton Grid.Row="2" Grid.Column="1" x:Name="radio2sub" Content="2" />
+                    <RadioButton Grid.Row="3" Grid.Column="1" x:Name="radio3sub" Content="3" />
+                    <RadioButton Grid.Row="4" Grid.Column="1" x:Name="radio4sub" Content="4" />
+                    <RadioButton Grid.Row="5" Grid.Column="1" x:Name="radio5sub" Content="5" />
                 </Grid>
 
-                <CheckBox Name="checkBox_subTimer" Content="Turn the subtimer on" Margin="0 10 0 0" IsEnabled="False"/>
-            </StackPanel>
+
+            </Grid>
 
         </Grid>
 
-        <Button Grid.Column="1" Name="btn_About" ToolTip="About developers" Click="btn_About_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="About"/>
+        <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="0 10 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Name="btn_About" Style="{StaticResource TransparentButton}" ToolTip="About developers" Click="btn_About_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button.Content>
+                    <Image Source="pack://application:,,,/img/info_48x48.png" Height="48"/>
+                </Button.Content>
+            </Button>
+
+            <Button Grid.Column="1" Name="btn_Register" Content="{DynamicResource Register...}" Click="btn_Register_Click" Style="{StaticResource BlueButton}" Width="100"/>
+        </Grid>
+
     </Grid>
 </Window>

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using BlueTimer.Properties;
+using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Media;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using QP = QP_Helpers.QP_Helpers;
@@ -19,6 +21,8 @@ namespace BlueTimer
     public partial class MainWindow : Window
     {
         public enum TimerType { Main, Sub }
+
+        #region VARIABLES AND ONLOAD
 
         #region Private members
 
@@ -35,11 +39,16 @@ namespace BlueTimer
         private bool mShouldStoreTimeBeforeLaunch = true;
 
         private int mBeforeLaunchHours = 0, mBeforeLaunchMinutes = 0, mBeforeLaunchSeconds = 0;
-        private int mBeforeLaunchSubMinutes = 0, mBeforeLaunchSubSeconds = 0;
+        private int mBeforeLaunchSubHours = 0, mBeforeLaunchSubMinutes = 0, mBeforeLaunchSubSeconds = 0;
 
-        private System.Windows.Forms.NotifyIcon mNotifyIcon;
+        private System.Windows.Forms.NotifyIcon mNotifyIcon = new System.Windows.Forms.NotifyIcon();
 
-        private double darkOpacity = 0.5;
+        /// <summary>
+        /// Actual hours, minutes and seconds
+        /// </summary>
+        private TimeSpan mTimeLeft;
+
+        private double mDarkOpacity = 0.5;
 
         #endregion
 
@@ -53,8 +62,26 @@ namespace BlueTimer
             mSubtimer.Tick += new EventHandler(mSubtimer_Tick);
             mSubtimer.Interval = new TimeSpan(0, 0, 1);
 
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Title += string.Format(" - Version {0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            #region Language
+
+            combo_language.SelectedIndex = (int)Settings.Default["defaultLanguageIndex"];
+
+            radio_detectLanguage.IsChecked = (bool)Settings.Default["detectLanguageOnStart"];
+
+            if (radio_detectLanguage.IsChecked == true)
+                SetLanguageDictionary(Thread.CurrentThread.CurrentCulture.ToString());
+            else
+            {
+                radio_detectLanguage.IsChecked = false;
+                radio_defaultLanguage.IsChecked = true;
+
+                if (combo_language.SelectedIndex == 0)
+                    SetLanguageDictionary("en-US");
+                else
+                    SetLanguageDictionary("de-DE");
+            }
+
+            #endregion
         }
 
         private void SetLanguageDictionary(string culture)
@@ -97,7 +124,7 @@ namespace BlueTimer
             {
                 QP._isLicensed = false;
 
-                this.Opacity = darkOpacity;
+                this.Opacity = mDarkOpacity;
                 Window_Buy win = new Window_Buy()
                 {
                     Owner = this,
@@ -112,138 +139,90 @@ namespace BlueTimer
 
         public void UnlockFull()
         {
-            grid_Presets.IsEnabled = checkBox_subTimer.IsEnabled = checkBox_sound.IsEnabled = true;
+            btn_Register.Visibility = Visibility.Collapsed;
+
+            grid_Presets.IsEnabled = checkBox_subTimer.IsEnabled = checkBox_sound.IsEnabled = numeric_Hours.IsEnabled = true;
         }
 
-        private void mMainTimer_Tick(object sender, EventArgs e)
+        #endregion
+
+        /// <summary>
+        /// Fill controls with actual time values.
+        /// </summary>
+        /// <param name="type">The type of a timer controls of which are filled.</param>
+        private void FillPrimitives(TimerType type)
         {
-            #region If seconds == 0
-
-            if (mSeconds == 0)
+            if (type == TimerType.Main)
             {
-                if (mMinutes == 0)
-                {
-                    if (mHours == 0)
-                    {
-                        mMainTimer.IsEnabled = false;
-
-                        if (checkBox_sound.IsChecked == true)
-                        {
-                            PlaySound();
-                        }
-
-                        if (checkBox_subTimer.IsChecked == true)
-                        {
-                            mIsSubtimerInProcess = true;
-                            mSubtimer.IsEnabled = true;
-                        }
-                        else
-                        {
-                            btn_StartPause.Content = "Start";
-
-                            btn_Stop.Visibility = Visibility.Hidden;
-
-                            EnableButtons();
-
-                            RestoreTimeValues();
-                        }
-                    }
-                    else
-                    {
-                        mHours -= 1;
-
-                        tb_Hours.Text = mHours.ToString("00");
-
-                        mMinutes = 59;
-                        numeric_Minutes.Value = mMinutes;
-
-                        mSeconds = 60;
-                    }
-                }
-                else
-                {
-                    mMinutes -= 1;
-                    numeric_Minutes.Value = mMinutes;
-                    mSeconds = 60;
-                }
+                mHours = Convert.ToInt32(numeric_Hours.Value);
+                mMinutes = Convert.ToInt32(numeric_Minutes.Value);
+                mSeconds = Convert.ToInt32(numeric_Seconds.Value);
             }
-
-            #endregion
-
-            if (mMainTimer.IsEnabled == true)
+            else
             {
-                mSeconds -= 1;
-                tb_Seconds.Text = mSeconds.ToString("00");
+                mHours = Convert.ToInt32(numeric_SubHours.Value);
+                mMinutes = Convert.ToInt32(numeric_SubMinutes.Value);
+                mSeconds = Convert.ToInt32(numeric_SubSeconds.Value);
             }
         }
 
-        private void EnableButtons()
-        {
-            groupBox_SingleTimerPresets.IsEnabled = true;
-            groupBox_SubtimerPresets.IsEnabled = true;
-
-            tb_Hours.IsReadOnly = false;
-            numeric_Minutes.IsReadOnly = false;
-            tb_Seconds.IsReadOnly = false;
-            tb_SubMinutes.IsReadOnly = false;
-            tb_SubSeconds.IsReadOnly = false;
-        }
-
-        private void DisableButtons()
-        {
-            groupBox_SingleTimerPresets.IsEnabled = false;
-            groupBox_SubtimerPresets.IsEnabled = false;
-
-            tb_Hours.IsReadOnly = true;
-            numeric_Minutes.IsReadOnly = true;
-            tb_Seconds.IsReadOnly = true;
-            tb_SubMinutes.IsReadOnly = true;
-            tb_SubSeconds.IsReadOnly = true;
-        }
+        #region TIMER BUTTONS
 
         private void btn_StartPause_Click(object sender, RoutedEventArgs e)
         {
             DisableButtons();
 
-            mHours = Convert.ToInt32(tb_Hours.Text);
-            mMinutes = Convert.ToInt32(numeric_Minutes.Value);
-            mSeconds = Convert.ToInt32(tb_Seconds.Text);
+            FillPrimitives(TimerType.Main);
+
+            mTimeLeft = new TimeSpan(mHours, mMinutes, mSeconds);
 
             if (mShouldStoreTimeBeforeLaunch == true)
             {
                 mBeforeLaunchHours = mHours;
                 mBeforeLaunchMinutes = mMinutes;
                 mBeforeLaunchSeconds = mSeconds;
-                mBeforeLaunchSubMinutes = Convert.ToInt32(tb_SubMinutes.Text);
-                mBeforeLaunchSubSeconds = Convert.ToInt32(tb_SubSeconds.Text);
+                mBeforeLaunchSubHours = Convert.ToInt32(numeric_SubHours.Text);
+                mBeforeLaunchSubMinutes = Convert.ToInt32(numeric_SubMinutes.Text);
+                mBeforeLaunchSubSeconds = Convert.ToInt32(numeric_SubSeconds.Text);
 
                 mShouldStoreTimeBeforeLaunch = false;
             }
 
+            // If the main timer is not working...
             if (mMainTimer.IsEnabled == false)
             {
                 btn_StartPause.Content = "Pause";
 
+                // If the subtimer is not working and not in process...
                 if (mSubtimer.IsEnabled == false && mIsSubtimerInProcess == false)
-                {
+                    // turn the main timer on.
                     mMainTimer.IsEnabled = true;
-                }
+                // If the subtimer is not working but in process...
                 else if (mSubtimer.IsEnabled == false && mIsSubtimerInProcess == true)
                 {
+                    // turn the subtimer on.
                     mSubtimer.IsEnabled = true;
+
+                    FillPrimitives(TimerType.Sub);
+
+                    mTimeLeft = new TimeSpan(mHours, mMinutes, mSeconds);
                 }
+                // If the subtimer is working...
                 else
                 {
+                    // pause the subtimer.
                     mSubtimer.IsEnabled = false;
-                    btn_StartPause.Content = "Continue";
+                    btn_StartPause.Content = "⯈";
                 }
 
                 btn_Stop.Visibility = Visibility.Visible;
             }
+            // If the main timer is working...
             else
             {
+                // pause the main timer.
                 mMainTimer.IsEnabled = false;
-                btn_StartPause.Content = "Continue";
+                btn_StartPause.Content = "⯈";
             }
         }
 
@@ -268,75 +247,165 @@ namespace BlueTimer
             EnableButtons();
         }
 
-        private void mSubtimer_Tick(object sender, EventArgs e)
+        #endregion
+
+        #region TICKS
+
+        private void mMainTimer_Tick(object sender, EventArgs e)
         {
-            mMinutes = Convert.ToInt32(tb_SubMinutes.Text);
-            mSeconds = Convert.ToInt32(tb_SubSeconds.Text);
-
-            if (mSeconds == 0)
+            if (mTimeLeft.Seconds <= 0 && mTimeLeft.Minutes == 0 && mTimeLeft.TotalHours == 0)
             {
-                if (mMinutes == 0)
+                mMainTimer.IsEnabled = false;
+
+                if (checkBox_sound.IsEnabled == true && checkBox_sound.IsChecked == true)
+                    PlaySound(TimerType.Main);
+
+                if (checkBox_subTimer.IsChecked == false)
                 {
-                    mSubtimer.IsEnabled = false;
-                    mIsSubtimerInProcess = false;
-
-                    if (checkBox_sound.IsChecked == true)
-                    {
-                        PlaySound();
-                    }
-
                     btn_StartPause.Content = "Start";
                     btn_Stop.Visibility = Visibility.Hidden;
                     EnableButtons();
                     RestoreTimeValues();
+
+                    if (myWindow.WindowState == WindowState.Minimized)
+                        ShowWindow();
+                    this.Activate();
                 }
                 else
                 {
-                    mMinutes -= 1;
-                    tb_SubMinutes.Text = mMinutes.ToString("00");
-                    mSeconds = 60;
+                    mIsSubtimerInProcess = true;
+
+                    FillPrimitives(TimerType.Sub);
+
+                    mTimeLeft = new TimeSpan(mHours, mMinutes, mSeconds);
+
+                    mSubtimer.IsEnabled = true;
                 }
             }
-            if (mSubtimer.IsEnabled == true)
+            else
             {
-                mSeconds -= 1;
-                tb_SubSeconds.Text = mSeconds.ToString("00");
+                mTimeLeft = mTimeLeft.Subtract(new TimeSpan(0, 0, 1));
+
+                numeric_Hours.Value = (int)mTimeLeft.TotalHours;
+                numeric_Minutes.Value = (int)mTimeLeft.Minutes;
+                numeric_Seconds.Value = (int)mTimeLeft.Seconds;
             }
         }
 
+        private void mSubtimer_Tick(object sender, EventArgs e)
+        {
+            if (mTimeLeft.Seconds <= 0 && mTimeLeft.Minutes == 0 && mTimeLeft.TotalHours == 0)
+            {
+                mSubtimer.IsEnabled = false;
+
+                mIsSubtimerInProcess = false;
+
+                if (checkBox_sound.IsEnabled == true && checkBox_sound.IsChecked == true)
+                    PlaySound(TimerType.Sub);
+
+
+                btn_StartPause.Content = "Start";
+                btn_Stop.Visibility = Visibility.Hidden;
+                EnableButtons();
+                RestoreTimeValues();
+
+                if (myWindow.WindowState == WindowState.Minimized)
+                    ShowWindow();
+                this.Activate();
+            }
+            else
+            {
+                mTimeLeft = mTimeLeft.Subtract(new TimeSpan(0, 0, 1));
+
+                numeric_SubHours.Value = (int)mTimeLeft.Hours;
+                numeric_SubMinutes.Value = (int)mTimeLeft.Minutes;
+                numeric_SubSeconds.Value = (int)mTimeLeft.Seconds;
+            }
+        }
+
+        #endregion
+
+        #region ENABLING AND DISABLING BUTTONS
+
+        private void EnableButtons()
+        {
+            groupBox_SingleTimerPresets.IsEnabled = groupBox_SubtimerPresets.IsEnabled = true;
+
+            numeric_Hours.IsReadOnly = numeric_Minutes.IsReadOnly = numeric_Seconds.IsReadOnly = numeric_SubHours.IsReadOnly = numeric_SubMinutes.IsReadOnly = numeric_SubSeconds.IsReadOnly = false;
+        }
+
+        private void DisableButtons()
+        {
+            groupBox_SingleTimerPresets.IsEnabled = groupBox_SubtimerPresets.IsEnabled = false;
+
+            numeric_Hours.IsReadOnly = numeric_Minutes.IsReadOnly = numeric_Seconds.IsReadOnly = numeric_SubHours.IsReadOnly = numeric_SubMinutes.IsReadOnly = numeric_SubSeconds.IsReadOnly = true;
+        }
+
+        #endregion
+
         private void btn_Preset_Click(object sender, RoutedEventArgs e)
         {
-            string tag = (sender as Button).Tag.ToString();
+            // First 2 characters.
+            string num;
 
-            if (tag.Contains("."))
+            Button btn = sender as Button;
+
+            string tag = btn.Tag.ToString();
+
+            object content = btn.Content;
+
+            // Potential TextBlock set as button's Content
+            TextBlock tblc = content as TextBlock;
+
+            // If button's content is not a TextBlock (for all-0 preset only)...
+            if (tblc == null)
+                // get first 2 characters from Content.
+                num = new string(content.ToString().Take(2).ToArray());
+            // If button's content is a TextBlock (for all other presets)...
+            else
             {
-                string[] time = tag.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                // Get a collection of Runs inside a TextBlock.
+                InlineCollection incol = tblc.Inlines;
 
-                numeric_Minutes.Value = int.Parse(time[0]);
+                // Get the first Run.
+                Inline inline = incol.FirstInline;
 
-                tb_Seconds.Text = string.Format("{0:D2}", int.Parse(time[1]));
-                tb_SubMinutes.Text = "00";
-                tb_SubSeconds.Text = "00";
+                // Get text of the first Run.
+                string text = new TextRange(inline.ContentStart, inline.ContentEnd).Text;
+
+                // Get first 2 characters from text.
+                num = new string(text.Take(2).ToArray());
             }
+
+            // Parse first 2 characters as digits.
+            int val = int.Parse(num);
+
+            // Parse Tag as format.
+
+            if (tag == "all")
+                numeric_Hours.Value = numeric_Minutes.Value = numeric_Seconds.Value = 0;
+
+            else if (tag == "seconds")
+                numeric_Seconds.Value = val;
+
+            else if (tag == "minutes")
+                numeric_Minutes.Value = val;
+
+            else if (tag == "hours")
+                numeric_Hours.Value = val;
+
             else if (tag.Contains("+"))
             {
                 string[] time = tag.Split("+".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
                 numeric_Minutes.Value = int.Parse(time[0]);
-                tb_Seconds.Text = "00";
-                tb_SubMinutes.Text = string.Format("{0:D2}", int.Parse(time[1]));
-                tb_SubSeconds.Text = "00";
-            }
-            else
-            {
-                numeric_Minutes.Value = 0;
-                tb_Seconds.Text = string.Format("{0:D2}", int.Parse(tag));
-                tb_SubMinutes.Text = "00";
-                tb_SubSeconds.Text = "00";
+                numeric_Seconds.Text = "00";
+                numeric_SubMinutes.Text = string.Format("{0:D2}", int.Parse(time[1]));
+                numeric_SubSeconds.Text = "00";
             }
         }
 
-        private void notifyIcon1_Click(object sender, EventArgs e)
+        private void ShowWindow()
         {
             mNotifyIcon.Visible = false;
 
@@ -347,17 +416,22 @@ namespace BlueTimer
             WindowState = WindowState.Normal;
         }
 
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            ShowWindow();
+        }
+
         private void myWindow_StateChanged(object sender, EventArgs e)
         {
             if (myWindow.WindowState == WindowState.Minimized)
             {
                 mNotifyIcon = new System.Windows.Forms.NotifyIcon();
 
-                mNotifyIcon.Text = "Blue Timer";
+                mNotifyIcon.Text = "BlueTimer";
 
                 mNotifyIcon.Click += notifyIcon1_Click;
 
-                Stream _imageStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Timer.ico")).Stream;
+                Stream _imageStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/img/notify-icon_16.ico")).Stream;
 
                 mNotifyIcon.Icon = new Icon(_imageStream);
 
@@ -369,14 +443,18 @@ namespace BlueTimer
 
         private void RestoreTimeValues()
         {
-            tb_Hours.Text = mBeforeLaunchHours.ToString("00");
+            numeric_Hours.Value = mBeforeLaunchHours;
             numeric_Minutes.Value = mBeforeLaunchMinutes;
-            tb_Seconds.Text = mBeforeLaunchSeconds.ToString("00");
-            tb_SubMinutes.Text = mBeforeLaunchSubMinutes.ToString("00");
-            tb_SubSeconds.Text = mBeforeLaunchSubSeconds.ToString("00");
+            numeric_Seconds.Value = mBeforeLaunchSeconds;
+
+            numeric_SubHours.Value = mBeforeLaunchSubHours;
+            numeric_SubMinutes.Value = mBeforeLaunchSubMinutes;
+            numeric_SubSeconds.Value = mBeforeLaunchSubSeconds;
         }
 
-        private void InputNumberValidation(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        #region VALIDATION
+
+        private void InputNumberValidation(object sender, TextCompositionEventArgs e)
         {
             // Regex that matches disallowed text
             Regex regex = new Regex("[^0-9]+");
@@ -384,83 +462,49 @@ namespace BlueTimer
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)
-            {
                 e.Handled = true;
-            }
+
             base.OnPreviewKeyDown(e);
         }
 
-        private void TextBoxLostFocus(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region SOUND NOTIFICATION
+
+        private void PlaySound(TimerType timerType)
         {
-            if ((sender as TextBox).Text == "")
+            if (timerType == TimerType.Main)
             {
-                (sender as TextBox).Text = "00";
+                if (radio1.IsChecked == true)
+                    PlayConsoleBeeps();
+                else if (radio2.IsChecked == true)
+                    PlayBeeps();
+                else if (radio3.IsChecked == true)
+                    PlayExclamations();
+                else if (radio4.IsChecked == true)
+                    PlayAsterisks();
+                else if (radio5.IsChecked == true)
+                    PlayHands(1);
             }
             else
             {
-                (sender as TextBox).Text = Convert.ToInt32((sender as TextBox).Text).ToString("00");
-
-                if (Convert.ToInt32((sender as TextBox).Text) > 59)
-                    (sender as TextBox).Text = "59";
+                if (radio1sub.IsChecked == true)
+                    PlayConsoleBeeps();
+                else if (radio2sub.IsChecked == true)
+                    PlayBeeps();
+                else if (radio3sub.IsChecked == true)
+                    PlayExclamations();
+                else if (radio4sub.IsChecked == true)
+                    PlayAsterisks();
+                else if (radio5sub.IsChecked == true)
+                    PlayHands(1);
             }
         }
 
-        private void PlaySound()
-        {
-            if (radio1.IsChecked == true)
-                PlayConsoleBeeps();
-            else if (radio2.IsChecked == true)
-                PlayBeeps();
-            else if (radio3.IsChecked == true)
-                PlayExclamations();
-            else if (radio4.IsChecked == true)
-                PlayAsterisks();
-            else if (radio5.IsChecked == true)
-                PlayHands(1);
-        }
-
-        private void ButtonDetectLanguage_Click(object sender, RoutedEventArgs e)
-        {
-            SetLanguageDictionary(Thread.CurrentThread.CurrentCulture.ToString());
-        }
-
-        private void ButtonEnglish_Click(object sender, RoutedEventArgs e)
-        {
-            SetLanguageDictionary("en-US");
-        }
-
-        private void ButtonGerman_Click(object sender, RoutedEventArgs e)
-        {
-            SetLanguageDictionary("de-DE");
-        }
-
-        private void btn_About_Click(object sender, RoutedEventArgs e)
-        {
-            Opacity = darkOpacity;
-
-            Window_About win = new Window_About()
-            {
-                Owner = this,
-                ShowInTaskbar = false
-            };
-            win.ShowDialog();
-
-            Opacity = 1;
-            ShowInTaskbar = true;
-        }
-
-        private void myWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-        }
-
-        private void btn_Custom_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        #region Sounds
 
         private void PlayConsoleBeeps()
         {
@@ -496,7 +540,6 @@ namespace BlueTimer
                 for (int i = 3; i > 0; i--)
                 {
                     SystemSounds.Exclamation.Play();
-                    Thread.Sleep(300);
                 }
 
                 Thread.Sleep(125);
@@ -521,6 +564,97 @@ namespace BlueTimer
                 SystemSounds.Hand.Play();
                 Thread.Sleep(2500);
             }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region LANGUAGE
+
+        private void ButtonDetectLanguage_Click(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionary(Thread.CurrentThread.CurrentCulture.ToString());
+        }
+
+        private void ButtonEnglish_Click(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionary("en-US");
+        }
+
+        private void ButtonGerman_Click(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionary("de-DE");
+        }
+
+        #endregion
+
+        private void btn_Custom_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = mDarkOpacity;
+            Window_EditCustomPreset win = new Window_EditCustomPreset(TimerType.Main)
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+
+            win.ShowDialog();
+
+            Opacity = 1;
+            ShowInTaskbar = true;
+        }
+
+        private void btn_CustomSubtimer_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = mDarkOpacity;
+            Window_EditCustomPreset win = new Window_EditCustomPreset(TimerType.Sub)
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+
+            win.ShowDialog();
+
+            Opacity = 1;
+            ShowInTaskbar = true;
+        }
+
+        private void btn_About_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = mDarkOpacity;
+
+            Window_About win = new Window_About()
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+            win.ShowDialog();
+
+            Opacity = 1;
+            ShowInTaskbar = true;
+        }
+
+        private void btn_Register_Click(object sender, RoutedEventArgs e)
+        {
+            Opacity = mDarkOpacity;
+            Window_Buy win = new Window_Buy()
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+            win.ShowDialog();
+
+            Opacity = 1;
+            ShowInTaskbar = true;
+        }
+
+        private void myWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Settings.Default["detectLanguageOnStart"] = radio_detectLanguage.IsChecked;
+            Settings.Default["defaultLanguageIndex"] = combo_language.SelectedIndex;
+
+            Settings.Default.Save();
+            Application.Current.Shutdown();
         }
 
     }
