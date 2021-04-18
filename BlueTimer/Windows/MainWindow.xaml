@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:BlueTimer"
         mc:Ignorable="d"
         Title="BlueTimer" Height="500" Width="500"
         StateChanged="myWindow_StateChanged"
@@ -41,6 +42,8 @@
             <EventSetter Event="PreviewKeyDown" Handler="OnPreviewKeyDown"/>
         </Style>
 
+        <local:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
     </Window.Resources>
 
     <Grid Background="#eaf2ff">
@@ -63,7 +66,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Name="grid_Presets" IsEnabled="False">
+            <Grid Grid.Row="0" Name="grid_Presets" IsEnabled="{Binding IsLicenseValid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
@@ -581,7 +584,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="0" x:Name="numeric_Hours" IsEnabled="False"/>
+                <toolkit:IntegerUpDown Grid.Column="0" Grid.Row="0" x:Name="numeric_Hours" IsEnabled="{Binding IsLicenseValid}"/>
                 <TextBlock Grid.Column="1" Text=":" Style="{StaticResource time-separators}"/>
 
                 <toolkit:IntegerUpDown Grid.Column="2" Grid.Row="0" Name="numeric_Minutes" />
@@ -599,7 +602,7 @@
                 <toolkit:IntegerUpDown Grid.Column="4" Grid.Row="1" x:Name="numeric_SubSeconds" IsEnabled="{Binding ElementName=checkBox_subTimer, Path=IsChecked}"/>
             </Grid>
 
-            <CheckBox Grid.Row="1" Name="checkBox_subTimer" Content="{DynamicResource turn-the-subtimer-on}" Margin="0 10 0 0" IsEnabled="False"/>
+            <CheckBox Grid.Row="1" Name="checkBox_subTimer" Content="{DynamicResource turn-the-subtimer-on}" Margin="0 10 0 0" IsEnabled="{Binding IsLicenseValid}"/>
 
             <Grid Grid.Row="2" Margin="0 10">
                 <Grid.ColumnDefinitions>
@@ -623,10 +626,10 @@
                 </Grid.RowDefinitions>
 
                 <!-- Row 1 -->
-                <CheckBox Grid.Row="0" Name="checkBox_sound" Content="{DynamicResource sound-notification}" Margin="0 0 0 5" IsChecked="True" IsEnabled="False"/>
+                <CheckBox Grid.Row="0" Name="checkBox_sound" Content="{DynamicResource sound-notification}" Margin="0 0 0 5" IsChecked="True" IsEnabled="{Binding IsLicenseValid}"/>
 
                 <!-- Row 2 -->
-                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=checkBox_sound,Path=IsEnabled}">
+                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=checkBox_sound,Path=IsChecked}">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -676,7 +679,7 @@
                 </Button.Content>
             </Button>
 
-            <Button Grid.Column="1" Name="btn_Register" Content="{DynamicResource Register...}" Click="btn_Register_Click" Style="{StaticResource BlueButton}" Width="100"/>
+            <Button Grid.Column="1" Name="btn_Register" Content="{DynamicResource Register...}" Click="btn_Register_Click" Style="{StaticResource BlueButton}" Width="100" Visibility="{Binding IsLicenseValid, Converter={StaticResource booleanToVisibilityConverter}}"/>
         </Grid>
 
     </Grid>

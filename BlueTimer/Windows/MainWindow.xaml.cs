@@ -1,5 +1,6 @@
 ﻿using BlueTimer.Properties;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,11 +19,34 @@ namespace BlueTimer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        /// <summary>
+        /// The event that is fired when any child property changes its value
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
+
+        /// <summary>
+        /// Call this to fire a <see cref="PropertyChanged"/> event
+        /// </summary>
+        /// <param name="name">The name of the property</param>
+        public void OnPropertyChanged(string name)
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+
         public enum TimerType { Main, Sub }
 
         #region VARIABLES AND ONLOAD
+
+        #region Public Properties
+
+        /// <summary>
+        /// Is the license key valid
+        /// </summary>
+        public bool IsLicenseValid { get; set; } = false;
+
+        #endregion
 
         #region Private members
 
@@ -80,6 +104,9 @@ namespace BlueTimer
                 else
                     SetLanguageDictionary("de-DE");
             }
+
+            // Set data context to this window
+            DataContext = this;
 
             #endregion
         }
@@ -139,9 +166,11 @@ namespace BlueTimer
 
         public void UnlockFull()
         {
-            btn_Register.Visibility = Visibility.Collapsed;
+            // Announce the license key to be valid
+            IsLicenseValid = true;
 
-            grid_Presets.IsEnabled = checkBox_subTimer.IsEnabled = checkBox_sound.IsEnabled = numeric_Hours.IsEnabled = true;
+            // Fire PropertyChanged event
+            OnPropertyChanged(nameof(IsLicenseValid));
         }
 
         #endregion
